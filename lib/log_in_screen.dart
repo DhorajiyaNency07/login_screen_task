@@ -3,8 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
-import 'next_screen.dart';
+import 'home_screen.dart';
 
 
 class LoginScreen extends StatefulWidget {
@@ -23,21 +22,32 @@ class _LoginScreenState extends State<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   var isLoading = false;
 
-  submit() {
-    final isValid = _formKey.currentState?.validate();
-    if (!isValid!) {
-      return;
-    }
-    _formKey.currentState?.save();
-    setData();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const SecondScreen(),
-      ),
-          (route) => false,
-    );
-  }
+  // submit() {
+  //   final isValid = _formKey.currentState?.validate();
+  //   if (!isValid!) {
+  //     return;
+  //   }
+  //   _formKey.currentState?.save();
+  //   setData();
+  //   Navigator.pushAndRemoveUntil(
+  //     context,
+  //     MaterialPageRoute(
+  //       builder: (context) => const HomeScreen(),
+  //     ),
+  //         (route) => false,
+  //   );
+  // }
+submit() async {
+  // Save login status in shared preferences
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  prefs.setBool('loggedIn', true);
+
+  // Navigate to the home screen
+  Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (context) => HomeScreen()),
+  );
+}
 
   @override
   void initState() {
@@ -157,7 +167,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   onPressed: () {
                     submit();
                   },
-                )
+                ),
               ],
             ),
           ),

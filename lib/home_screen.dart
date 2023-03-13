@@ -1,16 +1,17 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:login_screen_task/log_in_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SecondScreen extends StatefulWidget {
-  const SecondScreen({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<SecondScreen> createState() => _SecondScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _SecondScreenState extends State<SecondScreen> {
+class _HomeScreenState extends State<HomeScreen> {
   String email = "";
   String password = "";
   String image = "";
@@ -40,11 +41,26 @@ class _SecondScreenState extends State<SecondScreen> {
     setState(() {});
   }
 
+  Future<void> logout(BuildContext context) async {
+    // Logout logic goes here
+
+    // Save logout status in shared preferences
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setBool('loggedIn', false);
+
+    // Navigate to the login screen
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => LoginScreen()),
+    );
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Data Screen"),
+        title: const Text("Home Screen"),
       ),
       body: Column(
         children: [
@@ -66,9 +82,18 @@ class _SecondScreenState extends State<SecondScreen> {
               fontSize: 23,
               fontWeight: FontWeight.w500,
             ),
-          )
+          ),
+          ElevatedButton(
+            onPressed: () => logout(context),
+            child: Text('Logout'),
+          ),
         ],
       ),
     );
+  }
+
+  Future<bool> dataStore() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    return prefs.getBool('loggedIn') ?? false;
   }
 }
